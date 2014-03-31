@@ -137,6 +137,15 @@ module Sprockets
     def write_to(filename, options = {})
       # Gzip contents if filename has '.gz'
       options[:compress] ||= File.extname(filename) == '.gz'
+      
+      # Hacks for safari, which does not like .gz files
+      if options[:compress]
+        if filename =~ /\.css/
+          filename.gsub!(/\.gz/, '.cgz')
+        elsif filename =~ /\.js/
+          filename.gsub!(/\.gz/, '.jgz')
+        end
+      end
 
       FileUtils.mkdir_p File.dirname(filename)
 
